@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:tic_tac_toe/src/features/game/data/models/player.dart';
+import 'package:tic_tac_toe/src/features/game/domain/entities/player.dart';
 
 part 'game_status.freezed.dart';
 

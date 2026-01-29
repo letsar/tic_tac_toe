@@ -22,5 +22,5 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get game_screen_restart_button_label => 'Restart Game';
+  String get game_screen_reset_button_label => 'Reset Game';
 }
