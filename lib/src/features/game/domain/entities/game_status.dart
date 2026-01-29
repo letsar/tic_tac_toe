@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:tic_tac_toe/src/features/game/domain/entities/player.dart';
 
@@ -16,5 +18,8 @@ sealed class GameStatus with _$GameStatus {
   const factory GameStatus.gameOver({
     /// The player who won the game, if any.
     Player? winner,
+
+    /// The indices of the winning cells.
+    required UnmodifiableListView<int> winningCells,
   }) = GameOver;
 }

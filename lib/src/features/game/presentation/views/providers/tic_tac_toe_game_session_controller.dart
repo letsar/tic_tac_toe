@@ -7,15 +7,22 @@ part 'tic_tac_toe_game_session_controller.g.dart';
 @riverpod
 class TicTacToeGameSessionController extends _$TicTacToeGameSessionController {
   @override
-  TicTacToeGameSession build() {
-    return ref.read(resetGameSessionProvider).call();
+  Future<TicTacToeGameSession> build() async {
+    return await ref.read(fetchCurrentGameSessionUseCaseProvider).call();
   }
 
-  void onCellTapped(int index) {
-    state = ref.read(makeMoveUseCaseProvider).call(state, index);
+  Future<void> onCellTapped(int index) async {
+    final currentState = state.value;
+    if (currentState != null) {
+      state = await AsyncValue.guard(() {
+        return ref.read(makeMoveUseCaseProvider).call(currentState, index);
+      });
+    }
   }
 
-  void onResetPressed() {
-    state = ref.read(resetGameSessionProvider).call();
+  Future<void> onResetPressed() async {
+    state = await AsyncValue.guard(() {
+      return ref.read(resetGameSessionProvider).call();
+    });
   }
 }

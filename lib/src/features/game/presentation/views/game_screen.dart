@@ -3,8 +3,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tic_tac_toe/src/features/game/domain/entities/game_status.dart';
 import 'package:tic_tac_toe/src/features/game/domain/entities/player.dart';
 import 'package:tic_tac_toe/src/features/game/domain/entities/tic_tac_toe_game_board.dart';
+import 'package:tic_tac_toe/src/features/game/domain/entities/tic_tac_toe_game_session.dart';
 import 'package:tic_tac_toe/src/features/game/presentation/views/providers/tic_tac_toe_game_session_controller.dart';
 import 'package:tic_tac_toe/src/features/l10n/index.dart';
+
+final _currentGameSessionProvider = Provider<TicTacToeGameSession>((ref) {
+  throw UnimplementedError();
+});
 
 /// The screen used to display, and play the Tic Tac Toe game.
 class GameScreen extends StatelessWidget {
@@ -31,24 +36,64 @@ class _Body extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [Colors.purple.shade400, Colors.blue.shade600],
+          colors: [
+            Colors.purple.shade400,
+            Colors.blue.shade600,
+          ],
         ),
       ),
       child: const SafeArea(
         child: Center(
-          child: Column(
-            spacing: 8,
-            children: [
-              _Header(),
-              Expanded(
-                child: Align(
-                  alignment: Alignment.topCenter,
-                  child: _Board(),
-                ),
-              ),
-            ],
-          ),
+          child: _GameSession(),
         ),
+      ),
+    );
+  }
+}
+
+class _GameSession extends ConsumerWidget {
+  const _GameSession();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final ticTacToeGameSession = ref.watch(
+      ticTacToeGameSessionControllerProvider,
+    );
+
+    return ticTacToeGameSession.when(
+      loading: () => const CircularProgressIndicator(),
+      data: (session) => _LoadedGameSession(gameSession: session),
+      error: (error, stackTrace) {
+        return Text(error.toString());
+      },
+    );
+  }
+}
+
+class _LoadedGameSession extends StatelessWidget {
+  const _LoadedGameSession({
+    required this.gameSession,
+  });
+
+  final TicTacToeGameSession gameSession;
+
+  @override
+  Widget build(BuildContext context) {
+    return ProviderScope(
+      overrides: [
+        _currentGameSessionProvider.overrideWithValue(gameSession),
+      ],
+      child: Column(
+        spacing: 8,
+        children: [
+          _Header(),
+          Expanded(
+            child: Align(
+              alignment: Alignment.topCenter,
+              child: _Board(),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -80,7 +125,7 @@ class _Header extends StatelessWidget {
               child: Consumer(
                 builder: (context, ref, child) {
                   final gameStatus = ref.watch(
-                    ticTacToeGameSessionControllerProvider.select(
+                    _currentGameSessionProvider.select(
                       (x) => x.status,
                     ),
                   );
@@ -153,7 +198,7 @@ class _Cell extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final (player, isWinning) = ref.watch(
-      ticTacToeGameSessionControllerProvider.select((x) {
+      _currentGameSessionProvider.select((x) {
         final board = x.board;
         return (board.playerAt(index), x.isWinningCell(index));
       }),
@@ -238,13 +283,17 @@ class _ResetButton extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final isGameOver = ref.watch(
       ticTacToeGameSessionControllerProvider.select(
-        (x) => x.status is GameOver,
+        (x) => x.whenOrNull(
+          data: (data) {
+            return data.status is GameOver;
+          },
+        ),
       ),
     );
 
     final strings = context.strings;
 
-    if (isGameOver) {
+    if (isGameOver ?? false) {
       return ElevatedButton.icon(
         onPressed: () {
           ref

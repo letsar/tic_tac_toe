@@ -119,11 +119,11 @@ return gameOver(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Player currentPlayer)?  playing,TResult Function( Player? winner)?  gameOver,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Player currentPlayer)?  playing,TResult Function( Player? winner,  UnmodifiableListView<int> winningCells)?  gameOver,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case Playing() when playing != null:
 return playing(_that.currentPlayer);case GameOver() when gameOver != null:
-return gameOver(_that.winner);case _:
+return gameOver(_that.winner,_that.winningCells);case _:
   return orElse();
 
 }
@@ -141,11 +141,11 @@ return gameOver(_that.winner);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Player currentPlayer)  playing,required TResult Function( Player? winner)  gameOver,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Player currentPlayer)  playing,required TResult Function( Player? winner,  UnmodifiableListView<int> winningCells)  gameOver,}) {final _that = this;
 switch (_that) {
 case Playing():
 return playing(_that.currentPlayer);case GameOver():
-return gameOver(_that.winner);}
+return gameOver(_that.winner,_that.winningCells);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -159,11 +159,11 @@ return gameOver(_that.winner);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Player currentPlayer)?  playing,TResult? Function( Player? winner)?  gameOver,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Player currentPlayer)?  playing,TResult? Function( Player? winner,  UnmodifiableListView<int> winningCells)?  gameOver,}) {final _that = this;
 switch (_that) {
 case Playing() when playing != null:
 return playing(_that.currentPlayer);case GameOver() when gameOver != null:
-return gameOver(_that.winner);case _:
+return gameOver(_that.winner,_that.winningCells);case _:
   return null;
 
 }
@@ -242,11 +242,13 @@ as Player,
 
 
 class GameOver implements GameStatus {
-  const GameOver({this.winner});
+  const GameOver({this.winner, required this.winningCells});
   
 
 /// The player who won the game, if any.
  final  Player? winner;
+/// The indices of the winning cells.
+ final  UnmodifiableListView<int> winningCells;
 
 /// Create a copy of GameStatus
 /// with the given fields replaced by the non-null parameter values.
@@ -258,16 +260,16 @@ $GameOverCopyWith<GameOver> get copyWith => _$GameOverCopyWithImpl<GameOver>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is GameOver&&(identical(other.winner, winner) || other.winner == winner));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is GameOver&&(identical(other.winner, winner) || other.winner == winner)&&const DeepCollectionEquality().equals(other.winningCells, winningCells));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,winner);
+int get hashCode => Object.hash(runtimeType,winner,const DeepCollectionEquality().hash(winningCells));
 
 @override
 String toString() {
-  return 'GameStatus.gameOver(winner: $winner)';
+  return 'GameStatus.gameOver(winner: $winner, winningCells: $winningCells)';
 }
 
 
@@ -278,7 +280,7 @@ abstract mixin class $GameOverCopyWith<$Res> implements $GameStatusCopyWith<$Res
   factory $GameOverCopyWith(GameOver value, $Res Function(GameOver) _then) = _$GameOverCopyWithImpl;
 @useResult
 $Res call({
- Player? winner
+ Player? winner, UnmodifiableListView<int> winningCells
 });
 
 
@@ -295,10 +297,11 @@ class _$GameOverCopyWithImpl<$Res>
 
 /// Create a copy of GameStatus
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? winner = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? winner = freezed,Object? winningCells = null,}) {
   return _then(GameOver(
 winner: freezed == winner ? _self.winner : winner // ignore: cast_nullable_to_non_nullable
-as Player?,
+as Player?,winningCells: null == winningCells ? _self.winningCells : winningCells // ignore: cast_nullable_to_non_nullable
+as UnmodifiableListView<int>,
   ));
 }
 

@@ -22,8 +22,13 @@ class TicTacToeGameBoard {
   /// The number of columns in the game board.
   static const int columns = 3;
 
+  /// The total number of cells in the game board.
+  static const int cellCount = rows * columns;
+
   /// Where each player has made their moves on the board.
   final UnmodifiableListView<Player?> _playedBy;
+
+  Iterable<Player?> get playedBy => _playedBy;
 
   /// Indicates whether the given [index] is within the bounds of the game
   /// board.

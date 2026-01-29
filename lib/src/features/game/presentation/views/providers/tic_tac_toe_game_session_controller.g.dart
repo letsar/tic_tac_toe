@@ -15,7 +15,7 @@ final ticTacToeGameSessionControllerProvider =
 
 final class TicTacToeGameSessionControllerProvider
     extends
-        $NotifierProvider<
+        $AsyncNotifierProvider<
           TicTacToeGameSessionController,
           TicTacToeGameSession
         > {
@@ -36,31 +36,28 @@ final class TicTacToeGameSessionControllerProvider
   @$internal
   @override
   TicTacToeGameSessionController create() => TicTacToeGameSessionController();
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(TicTacToeGameSession value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<TicTacToeGameSession>(value),
-    );
-  }
 }
 
 String _$ticTacToeGameSessionControllerHash() =>
-    r'c4a73f2a537ba77f2c2ae7ada3e64ae524e38843';
+    r'910b9053a6dd3e3583a067d97a7d4ca7eecda839';
 
 abstract class _$TicTacToeGameSessionController
-    extends $Notifier<TicTacToeGameSession> {
-  TicTacToeGameSession build();
+    extends $AsyncNotifier<TicTacToeGameSession> {
+  FutureOr<TicTacToeGameSession> build();
   @$mustCallSuper
   @override
   void runBuild() {
-    final ref = this.ref as $Ref<TicTacToeGameSession, TicTacToeGameSession>;
+    final ref =
+        this.ref
+            as $Ref<AsyncValue<TicTacToeGameSession>, TicTacToeGameSession>;
     final element =
         ref.element
             as $ClassProviderElement<
-              AnyNotifier<TicTacToeGameSession, TicTacToeGameSession>,
-              TicTacToeGameSession,
+              AnyNotifier<
+                AsyncValue<TicTacToeGameSession>,
+                TicTacToeGameSession
+              >,
+              AsyncValue<TicTacToeGameSession>,
               Object?,
               Object?
             >;
