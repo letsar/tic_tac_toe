@@ -1,5 +1,6 @@
 import 'dart:collection';
 import 'dart:convert';
+import 'dart:math' as math;
 
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tic_tac_toe/src/features/game/data/dtos/game_session_dto.dart';
@@ -69,7 +70,8 @@ extension on GameSessionDto {
 
 extension on List<int?> {
   TicTacToeGameBoard toBoard() {
-    var board = TicTacToeGameBoard();
+    final size = math.sqrt(length).ceil();
+    var board = TicTacToeGameBoard(size: size);
     for (int i = 0; i < length; i++) {
       final id = this[i];
       final player = id != null ? Player.values[id] : null;

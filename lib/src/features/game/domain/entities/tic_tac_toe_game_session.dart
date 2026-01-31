@@ -17,8 +17,8 @@ class TicTacToeGameSession {
   });
 
   static final TicTacToeGameSession initial = TicTacToeGameSession(
-    board: TicTacToeGameBoard(),
-    status: GameStatus.playing(currentPlayer: Player.one),
+    board: TicTacToeGameBoard(size: 3),
+    status: const GameStatus.playing(currentPlayer: Player.one),
   );
 
   final TicTacToeGameBoard board;

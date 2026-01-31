@@ -33,7 +33,7 @@ class GameRulesService {
   ) {
     if (isWinningCell(board, index)) {
       final winningCells = List<int>.generate(
-        TicTacToeGameBoard.cellCount,
+        board.cellCount,
         (i) => i,
       ).where((i) => isWinningCell(board, i));
 
@@ -64,39 +64,52 @@ extension on TicTacToeGameBoard {
       return false;
     }
 
-    final row = index ~/ 3;
-    final col = index % 3;
-    final onDiag1 = index % 4 == 0;
-    final onDiag2 = index == 2 || index == 4 || index == 6;
+    final row = index ~/ size;
+    final col = index % size;
 
-    final won =
-        rowWon(row) ||
-        colWon(col) ||
-        (onDiag1 && diag1Won()) ||
-        (onDiag2 && diag2Won());
+    // Directions are a pair of(row, col)
+    const directions = [
+      [0, 1], // horizontal
+      [1, 0], // vertical
+      [1, 1], // main diagonal \
+      [1, -1], // anti diagonal /
+    ];
 
-    return won;
+    for (final direction in directions) {
+      int dr = direction[0];
+      int dc = direction[1];
+      int count = 1;
+
+      // Forward ray.
+      int r = row + dr;
+      int c = col + dc;
+      while (playerAtCell(r, c) == player) {
+        count++;
+        r += dr;
+        c += dc;
+      }
+
+      // Backward ray
+      r = row - dr;
+      c = col - dc;
+      while (playerAtCell(r, c) == player) {
+        count++;
+        r -= dr;
+        c -= dc;
+      }
+
+      if (count >= size) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
-  bool rowWon(int rowIndex) {
-    return patternWon(rowIndex * 3, 1);
-  }
-
-  bool colWon(int colIndex) {
-    return patternWon(colIndex, 3);
-  }
-
-  bool diag1Won() {
-    return patternWon(0, 4);
-  }
-
-  bool diag2Won() {
-    return patternWon(2, 2);
-  }
-
-  bool patternWon(int firstIndex, int pattern) {
-    final player = playerAt(firstIndex);
-    return playerAt(firstIndex + pattern) == player &&
-        playerAt(firstIndex + 2 * pattern) == player;
+  Player? playerAtCell(int row, int col) {
+    if (row < 0 || row >= size || col < 0 || col >= size) {
+      return null;
+    }
+    return playerAt(row * size + col);
   }
 }

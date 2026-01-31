@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tic_tac_toe/src/features/game/domain/entities/game_status.dart';
 import 'package:tic_tac_toe/src/features/game/domain/entities/player.dart';
-import 'package:tic_tac_toe/src/features/game/domain/entities/tic_tac_toe_game_board.dart';
 import 'package:tic_tac_toe/src/features/game/domain/entities/tic_tac_toe_game_session.dart';
 import 'package:tic_tac_toe/src/features/game/presentation/views/providers/tic_tac_toe_game_session_controller.dart';
 import 'package:tic_tac_toe/src/features/l10n/index.dart';
@@ -83,7 +82,7 @@ class _LoadedGameSession extends StatelessWidget {
       overrides: [
         _currentGameSessionProvider.overrideWithValue(gameSession),
       ],
-      child: Column(
+      child: const Column(
         spacing: 8,
         children: [
           _Header(),
@@ -170,16 +169,27 @@ class _Board extends StatelessWidget {
               ),
             ],
           ),
-          child: GridView.builder(
-            physics: const NeverScrollableScrollPhysics(),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: TicTacToeGameBoard.columns,
-              crossAxisSpacing: 12,
-              mainAxisSpacing: 12,
-            ),
-            itemCount: TicTacToeGameBoard.columns * TicTacToeGameBoard.rows,
-            itemBuilder: (context, index) {
-              return _Cell(index: index);
+          child: Consumer(
+            builder: (context, ref, _) {
+              final (size, cellCount) = ref.watch(
+                _currentGameSessionProvider.select((x) {
+                  final board = x.board;
+                  return (board.size, board.cellCount);
+                }),
+              );
+
+              return GridView.builder(
+                physics: const NeverScrollableScrollPhysics(),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: size,
+                  crossAxisSpacing: 12,
+                  mainAxisSpacing: 12,
+                ),
+                itemCount: cellCount,
+                itemBuilder: (context, index) {
+                  return _Cell(index: index);
+                },
+              );
             },
           ),
         ),
