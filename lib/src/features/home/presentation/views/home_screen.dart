@@ -26,6 +26,7 @@ class _Body extends StatelessWidget {
     return const SingleChildScrollView(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
+
         children: [
           _Title(),
           SizedBox(height: 48),
@@ -47,25 +48,13 @@ class _Title extends StatelessWidget {
   Widget build(BuildContext context) {
     final strings = context.strings;
 
-    return Column(
-      children: [
-        Text(
-          strings.app_title,
-          style: Theme.of(context).textTheme.displayLarge?.copyWith(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-            fontSize: 56,
-          ),
-        ),
-        const SizedBox(height: 16),
-        Text(
-          strings.home_screen_subtitle,
-          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-            color: Colors.white.withValues(alpha: 0.9),
-            fontSize: 20,
-          ),
-        ),
-      ],
+    return Text(
+      strings.app_title,
+      style: Theme.of(context).textTheme.displayLarge?.copyWith(
+        color: Colors.white,
+        fontWeight: FontWeight.bold,
+        fontSize: 56,
+      ),
     );
   }
 }
