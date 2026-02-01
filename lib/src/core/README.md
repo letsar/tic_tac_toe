@@ -1,0 +1,1 @@
+The core folder contains shared resources for infrastructure. It knows nothing about the features.

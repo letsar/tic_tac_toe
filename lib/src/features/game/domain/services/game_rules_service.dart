@@ -1,8 +1,8 @@
 import 'dart:collection';
 
-import 'package:tic_tac_toe/src/features/game/domain/entities/game_status.dart';
-import 'package:tic_tac_toe/src/features/game/domain/entities/player.dart';
-import 'package:tic_tac_toe/src/features/game/domain/entities/tic_tac_toe_game_board.dart';
+import 'package:tic_tac_toe/src/shared/game/domain/entities/game_status.dart';
+import 'package:tic_tac_toe/src/shared/game/domain/entities/player.dart';
+import 'package:tic_tac_toe/src/shared/game/domain/entities/tic_tac_toe_game_board.dart';
 
 /// Service that contains the game rules and logic for determining game outcomes.
 ///

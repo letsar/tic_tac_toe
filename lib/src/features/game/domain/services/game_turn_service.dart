@@ -1,6 +1,6 @@
-import 'package:tic_tac_toe/src/features/game/domain/entities/game_status.dart';
-import 'package:tic_tac_toe/src/features/game/domain/entities/player.dart';
-import 'package:tic_tac_toe/src/features/game/domain/entities/tic_tac_toe_game_session.dart';
+import 'package:tic_tac_toe/src/shared/game/domain/entities/game_status.dart';
+import 'package:tic_tac_toe/src/shared/game/domain/entities/player.dart';
+import 'package:tic_tac_toe/src/shared/game/domain/entities/tic_tac_toe_game_session.dart';
 
 /// Service responsible for managing game turns in a Tic Tac Toe game.
 ///

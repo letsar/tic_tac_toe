@@ -1,7 +1,7 @@
-import 'package:tic_tac_toe/src/features/game/domain/entities/tic_tac_toe_game_session.dart';
-import 'package:tic_tac_toe/src/features/game/domain/repositories/game_repository.dart';
 import 'package:tic_tac_toe/src/features/game/domain/services/game_rules_service.dart';
 import 'package:tic_tac_toe/src/features/game/domain/services/game_turn_service.dart';
+import 'package:tic_tac_toe/src/shared/game/domain/entities/tic_tac_toe_game_session.dart';
+import 'package:tic_tac_toe/src/shared/game/domain/repositories/game_repository.dart';
 
 /// Use case for making a move in a Tic Tac Toe game.
 ///

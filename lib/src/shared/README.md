@@ -1,0 +1,1 @@
+This folder contains all shared business resources which can be used across all the features.

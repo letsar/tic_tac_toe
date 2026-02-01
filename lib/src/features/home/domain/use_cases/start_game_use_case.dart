@@ -4,16 +4,16 @@ import 'package:tic_tac_toe/src/shared/game/domain/entities/tic_tac_toe_game_boa
 import 'package:tic_tac_toe/src/shared/game/domain/entities/tic_tac_toe_game_session.dart';
 import 'package:tic_tac_toe/src/shared/game/domain/repositories/game_repository.dart';
 
-class ResetGameSessionUseCase {
-  const ResetGameSessionUseCase({
+class StartGameUseCase {
+  const StartGameUseCase({
     required GameRepository gameRepository,
   }) : _gameRepository = gameRepository;
 
   final GameRepository _gameRepository;
 
-  Future<TicTacToeGameSession> call(TicTacToeGameSession session) async {
+  Future<TicTacToeGameSession> call(int boardSize) async {
     final newSession = TicTacToeGameSession(
-      board: TicTacToeGameBoard(size: session.board.size),
+      board: TicTacToeGameBoard(size: boardSize),
       status: const GameStatus.playing(currentPlayer: Player.one),
     );
     await _gameRepository.saveSession(newSession);

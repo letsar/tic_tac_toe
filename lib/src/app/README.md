@@ -1,0 +1,1 @@
+The app folder is the glue between all features of the application.

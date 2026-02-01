@@ -1,11 +1,11 @@
 import 'dart:collection';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tic_tac_toe/src/features/game/domain/entities/game_status.dart';
-import 'package:tic_tac_toe/src/features/game/domain/entities/player.dart';
-import 'package:tic_tac_toe/src/features/game/domain/entities/tic_tac_toe_game_board.dart';
-import 'package:tic_tac_toe/src/features/game/domain/entities/tic_tac_toe_game_session.dart';
 import 'package:tic_tac_toe/src/features/game/domain/services/game_turn_service.dart';
+import 'package:tic_tac_toe/src/shared/game/domain/entities/game_status.dart';
+import 'package:tic_tac_toe/src/shared/game/domain/entities/player.dart';
+import 'package:tic_tac_toe/src/shared/game/domain/entities/tic_tac_toe_game_board.dart';
+import 'package:tic_tac_toe/src/shared/game/domain/entities/tic_tac_toe_game_session.dart';
 
 void main() {
   group('GameTurnService', () {
@@ -21,7 +21,7 @@ void main() {
         // . . .
         // . . .
         // . . .
-        final session = TicTacToeGameSession.initial;
+        final session = _createInitialGameSession();
 
         // Act
         final player = service.playerToPlay(session, 0);
@@ -32,7 +32,7 @@ void main() {
 
       test('should return null when cell index is invalid (negative)', () {
         // Arrange
-        final session = TicTacToeGameSession.initial;
+        final session = _createInitialGameSession();
 
         // Act
         final player = service.playerToPlay(session, -1);
@@ -43,7 +43,7 @@ void main() {
 
       test('should return null when cell index is invalid (too large)', () {
         // Arrange
-        final session = TicTacToeGameSession.initial;
+        final session = _createInitialGameSession();
 
         // Act
         final player = service.playerToPlay(session, 9);
@@ -185,7 +185,7 @@ void main() {
 
       test('should handle edge cases at board boundaries', () {
         // Arrange: 3x3 board
-        final session = TicTacToeGameSession.initial;
+        final session = _createInitialGameSession();
 
         // Act & Assert - boundary cells
         expect(
@@ -260,4 +260,11 @@ void main() {
       });
     });
   });
+}
+
+TicTacToeGameSession _createInitialGameSession() {
+  return TicTacToeGameSession(
+    board: TicTacToeGameBoard(size: 3),
+    status: const GameStatus.playing(currentPlayer: Player.one),
+  );
 }

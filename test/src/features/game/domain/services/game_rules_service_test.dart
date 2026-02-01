@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tic_tac_toe/src/features/game/domain/entities/game_status.dart';
-import 'package:tic_tac_toe/src/features/game/domain/entities/player.dart';
-import 'package:tic_tac_toe/src/features/game/domain/entities/tic_tac_toe_game_board.dart';
 import 'package:tic_tac_toe/src/features/game/domain/services/game_rules_service.dart';
+import 'package:tic_tac_toe/src/shared/game/domain/entities/game_status.dart';
+import 'package:tic_tac_toe/src/shared/game/domain/entities/player.dart';
+import 'package:tic_tac_toe/src/shared/game/domain/entities/tic_tac_toe_game_board.dart';
 
 void main() {
   group('GameRulesService', () {

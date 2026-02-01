@@ -1,76 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tic_tac_toe/src/features/game/domain/entities/game_status.dart';
-import 'package:tic_tac_toe/src/features/game/domain/entities/player.dart';
-import 'package:tic_tac_toe/src/features/game/domain/entities/tic_tac_toe_game_session.dart';
-import 'package:tic_tac_toe/src/features/game/presentation/views/providers/tic_tac_toe_game_session_controller.dart';
-import 'package:tic_tac_toe/src/features/l10n/index.dart';
-
-final _currentGameSessionProvider = Provider<TicTacToeGameSession>((ref) {
-  throw UnimplementedError();
-});
+import 'package:tic_tac_toe/src/core/presentation/widgets/app_scaffold.dart';
+import 'package:tic_tac_toe/src/features/game/presentation/providers/game_screen_providers.dart';
+import 'package:tic_tac_toe/src/shared/game/domain/entities/game_status.dart';
+import 'package:tic_tac_toe/src/shared/game/domain/entities/player.dart';
+import 'package:tic_tac_toe/src/shared/game/domain/entities/tic_tac_toe_game_session.dart';
+import 'package:tic_tac_toe/src/shared/l10n/index.dart';
 
 /// The screen used to display, and play the Tic Tac Toe game.
 class GameScreen extends StatelessWidget {
   const GameScreen({
     super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return const Scaffold(
-      body: _Body(),
-      floatingActionButton: _ResetButton(),
-    );
-  }
-}
-
-class _Body extends StatelessWidget {
-  const _Body();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Colors.purple.shade400,
-            Colors.blue.shade600,
-          ],
-        ),
-      ),
-      child: const SafeArea(
-        child: Center(
-          child: _GameSession(),
-        ),
-      ),
-    );
-  }
-}
-
-class _GameSession extends ConsumerWidget {
-  const _GameSession();
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final ticTacToeGameSession = ref.watch(
-      ticTacToeGameSessionControllerProvider,
-    );
-
-    return ticTacToeGameSession.when(
-      loading: () => const CircularProgressIndicator(),
-      data: (session) => _LoadedGameSession(gameSession: session),
-      error: (error, stackTrace) {
-        return Text(error.toString());
-      },
-    );
-  }
-}
-
-class _LoadedGameSession extends StatelessWidget {
-  const _LoadedGameSession({
     required this.gameSession,
   });
 
@@ -80,20 +20,38 @@ class _LoadedGameSession extends StatelessWidget {
   Widget build(BuildContext context) {
     return ProviderScope(
       overrides: [
-        _currentGameSessionProvider.overrideWithValue(gameSession),
+        ticTacToeGameSessionControllerProvider.overrideWithBuild((ref, c) {
+          return gameSession;
+        }),
       ],
-      child: const Column(
-        spacing: 8,
-        children: [
-          _Header(),
-          Expanded(
-            child: Align(
-              alignment: Alignment.topCenter,
-              child: _Board(),
-            ),
-          ),
-        ],
+      child: AppScaffold(
+        appBar: AppBar(
+          foregroundColor: Colors.white,
+          backgroundColor: Colors.transparent,
+        ),
+        body: const _GameSession(),
+        floatingActionButton: const _ResetButton(),
       ),
+    );
+  }
+}
+
+class _GameSession extends StatelessWidget {
+  const _GameSession();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Column(
+      spacing: 8,
+      children: [
+        _Header(),
+        Expanded(
+          child: Align(
+            alignment: Alignment.topCenter,
+            child: _Board(),
+          ),
+        ),
+      ],
     );
   }
 }
@@ -124,7 +82,7 @@ class _Header extends StatelessWidget {
               child: Consumer(
                 builder: (context, ref, child) {
                   final gameStatus = ref.watch(
-                    _currentGameSessionProvider.select(
+                    ticTacToeGameSessionControllerProvider.select(
                       (x) => x.status,
                     ),
                   );
@@ -172,7 +130,7 @@ class _Board extends StatelessWidget {
           child: Consumer(
             builder: (context, ref, _) {
               final (size, cellCount) = ref.watch(
-                _currentGameSessionProvider.select((x) {
+                ticTacToeGameSessionControllerProvider.select((x) {
                   final board = x.board;
                   return (board.size, board.cellCount);
                 }),
@@ -208,7 +166,7 @@ class _Cell extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final (player, isWinning) = ref.watch(
-      _currentGameSessionProvider.select((x) {
+      ticTacToeGameSessionControllerProvider.select((x) {
         final board = x.board;
         return (board.playerAt(index), x.isWinningCell(index));
       }),
@@ -293,17 +251,13 @@ class _ResetButton extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final isGameOver = ref.watch(
       ticTacToeGameSessionControllerProvider.select(
-        (x) => x.whenOrNull(
-          data: (data) {
-            return data.status is GameOver;
-          },
-        ),
+        (x) => x.status is GameOver,
       ),
     );
 
     final strings = context.strings;
 
-    if (isGameOver ?? false) {
+    if (isGameOver) {
       return ElevatedButton.icon(
         onPressed: () {
           ref
